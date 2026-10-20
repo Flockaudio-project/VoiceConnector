@@ -85,7 +85,7 @@ jobs:
           APPDATA: ${{ runner.temp }}/appdata
         run: |
           mkdir -p selftest
-          "./dist/REKA.exe" --selftest "$(pwd -W)/selftest/console.png"
+          ./dist/VoiceConnector.exe --selftest selftest/console.png
           cat selftest/console.txt
           grep -q "RÉSULTAT : OK" selftest/console.txt
           ls -la dist selftest
@@ -94,7 +94,7 @@ jobs:
           python - <<'PY'
           import datetime, hashlib, json, os, subprocess
           info = json.load(open("build_info.json", encoding="utf-8"))
-          data = open("dist/REKA.exe", "rb").read()
+          data = open("dist/VoiceConnector.exe", "rb").read()
           info.update(
               sha256=hashlib.sha256(data).hexdigest(), size=len(data),
               notes=subprocess.check_output(["git", "log", "-1", "--format=%s"],
@@ -105,7 +105,7 @@ jobs:
           branch_tag = "build-" + os.environ["GITHUB_REF_NAME"].replace("/", "-")
           for folder, tag in (("dist", info["tag"]), ("dist/branch", branch_tag)):
               os.makedirs(folder, exist_ok=True)
-              out = dict(info, url=f"https://github.com/{info['repo']}/releases/download/{tag}/REKA.exe")
+              out = dict(info, url=f"https://github.com/{info['repo']}/releases/download/{tag}/VoiceConnector.exe")
               json.dump(out, open(f"{folder}/version.json", "w", encoding="utf-8"),
                         ensure_ascii=False, indent=2)
               print(json.dumps(out, ensure_ascii=False, indent=2))
@@ -113,9 +113,9 @@ jobs:
       - name: Artefact
         uses: actions/upload-artifact@v4
         with:
-          name: REKA
+          name: VoiceConnector
           path: |
-            reaper_mixer/dist/REKA.exe
+            reaper_mixer/dist/VoiceConnector.exe
             reaper_mixer/dist/version.json
             reaper_mixer/selftest/
       - name: Release « build-<branche> »
@@ -125,14 +125,14 @@ jobs:
         run: |
           tag="build-${GITHUB_REF_NAME//\//-}"
           gh release delete "$tag" --yes --cleanup-tag || true
-          gh release create "$tag" dist/REKA.exe dist/branch/version.json selftest/console.png \
+          gh release create "$tag" dist/VoiceConnector.exe dist/branch/version.json selftest/console.png \
             --prerelease --target "$GITHUB_SHA" \
-            --title "REKA — dernier build ($GITHUB_REF_NAME)" \
+            --title "VoiceConnector — dernier build ($GITHUB_REF_NAME)" \
             --notes "Exécutable Windows construit automatiquement depuis $GITHUB_SHA.
 
-          Télécharge **REKA.exe** et lance-le. Il faut Voicemeeter (Potato ou Banana) et REAPER installés.
-          REKA est développé par Regrettable. Merci à Zerka et Fyra pour leur contribution.
-          Pour voir la console sans eux : \`REKA.exe --demo\`.
+          Télécharge **VoiceConnector.exe** et lance-le. Il faut Voicemeeter (Potato ou Banana) et REAPER installés.
+          VoiceConnector est développé par Regrettable. Merci à Zerka et Fyra pour leur contribution.
+          Pour voir la console sans eux : \`VoiceConnector.exe --demo\`.
           console.png : rendu de l'auto-test fait par ce build."
       - name: Release commune « build-latest » (mises à jour de tous les exe)
         if: github.event_name == 'push'
@@ -148,10 +148,10 @@ jobs:
             fi
           fi
           gh release delete build-latest --yes --cleanup-tag || true
-          gh release create build-latest dist/REKA.exe dist/version.json selftest/console.png \
+          gh release create build-latest dist/VoiceConnector.exe dist/version.json selftest/console.png \
             --prerelease --target "$GITHUB_SHA" \
-            --title "REKA — dernier build (toutes branches)" \
-            --notes "Dernier exe construit ($GITHUB_REF_NAME, $GITHUB_SHA). REKA s'y met à jour automatiquement."
+            --title "VoiceConnector — dernier build (toutes branches)" \
+            --notes "Dernier exe construit ($GITHUB_REF_NAME, $GITHUB_SHA). VoiceConnector s'y met à jour automatiquement."
           # Anciens exe (qui consultent encore build-<autre branche>) : leur
           # version.json annonce aussi ce build, téléchargé depuis build-latest
           own="build-${GITHUB_REF_NAME//\//-}"
