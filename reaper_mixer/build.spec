@@ -18,6 +18,9 @@ except ImportError:             # build hors Windows : pas de ressource de versi
     VSVersionInfo = None
 
 # Version et développeurs lus dans core/config.py (sans importer l'application)
+if 'SPECPATH' not in globals():
+    SPECPATH = os.path.dirname(os.path.abspath(__file__))
+
 with open(os.path.join(SPECPATH, "core", "config.py"), encoding="utf-8") as source:
     _config_source = source.read()
 
