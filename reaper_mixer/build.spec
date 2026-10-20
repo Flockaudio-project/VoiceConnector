@@ -27,7 +27,7 @@ with open(os.path.join(SPECPATH, "core", "config.py"), encoding="utf-8") as sour
 
 
 def _constant(name):
-    return re.search(rf'^{name} = "([^"]*)"', _config_source, MULTILINE:=re.MULTILINE).group(1)
+    return re.search(rf'^{name} = "([^"]*)"', _config_source, re.MULTILINE).group(1)
 
 
 APP_VERSION = _constant("APP_VERSION")
