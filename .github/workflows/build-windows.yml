@@ -77,7 +77,7 @@ jobs:
       - name: Propriétés de l'exe (version, développeurs)
         shell: pwsh
         run: |
-          $info = (Get-Item dist/REKA.exe).VersionInfo
+          $info = (Get-Item dist/VoiceConnector.exe).VersionInfo
           $info | Format-List ProductName, ProductVersion, FileDescription, CompanyName, LegalCopyright
           if ($info.CompanyName -ne "Regrettable") { throw "Crédits absents de REKA.exe" }
       - name: Auto-test de l'exe (rendu de la console en mode démo)
