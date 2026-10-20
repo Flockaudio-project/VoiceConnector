@@ -35,7 +35,7 @@ def test_solo_mutes_the_others_then_restores(qapp, mixer):
     assert all(vm._strips[i].mute for i in range(len(window.strips)) if i != 1)
     window.strips[1].solo.click()
     pump(qapp, 0.1)
-    assert not any(vm._strips[i].mute for i in range(len(window.strips))) is True
+    assert not any(vm._strips[i].mute for i in range(len(window.strips)))
 
 
 def test_mute_all_toggles(qapp, mixer):
