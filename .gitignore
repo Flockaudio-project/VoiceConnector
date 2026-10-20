@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+selftest/
+.pytest_cache/
+*.log
+reaper_mixer/build_info.json
