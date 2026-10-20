@@ -79,7 +79,7 @@ jobs:
         run: |
           $info = (Get-Item dist/VoiceConnector.exe).VersionInfo
           $info | Format-List ProductName, ProductVersion, FileDescription, CompanyName, LegalCopyright
-          if ($info.CompanyName -ne "Regrettable") { throw "Crédits absents de REKA.exe" }
+          if ($info.CompanyName -ne "Zerka") { throw "Crédits absents de VoiceConnector.exe" }
       - name: Auto-test de l'exe (rendu de la console en mode démo)
         env:
           APPDATA: ${{ runner.temp }}/appdata
