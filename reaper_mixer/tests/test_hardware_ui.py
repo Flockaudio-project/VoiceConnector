@@ -14,7 +14,7 @@ def test_matrix_toggles_route_and_follows_engine(qapp, mixer):
     pump(qapp, 0.1)
     assert vm._strips[0].routes[0]
     assert window.strips[0].knobs[0].isActive()          # la strip suit la matrice
-    assert window.matrix.state(0, 0)
+    assert window.matrix.state(0, 0) is True
 
 
 def test_route_button_updates_matrix(qapp, mixer):
@@ -32,7 +32,7 @@ def test_solo_mutes_the_others_then_restores(qapp, mixer):
     window.strips[1].solo.click()
     pump(qapp, 0.1)
     assert not vm._strips[1].mute
-    assert all(vm._strips[i].mute for i in range(len(window.strips)) if i != 1)
+    assert all(vm._strips[i].mute for i in range(len(window.strips)) if i != 1) is True
     window.strips[1].solo.click()
     pump(qapp, 0.1)
     assert not any(vm._strips[i].mute for i in range(len(window.strips)))
