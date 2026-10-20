@@ -1,18 +1,16 @@
-<p align="center"><img src="assets/reka_logo.png" alt="REKA" width="420"></p>
+<p align="center"><img src="assets/voiceconnector_logo.png" alt="VoiceConnector" width="420"></p>
 
-# REKA
+# VoiceConnector
 
 Console de mixage unique pour Windows : elle pilote **Voicemeeter Potato ou Banana**
 (routing, volumes, mutes, VU-mètres) et **REAPER** (effets VST par strip), qui tournent
 tous les deux cachés en arrière-plan. L'utilisateur ne voit que la console.
 
-Développé par **Regrettable**. Merci à **Zerka** et **Fyra** pour leur contribution.
-
-![console](https://github.com/regret-py/rekav2/releases/download/build-claude-charming-hawking-bll4o5/console.png)
+Développé par **Zerka**.
 
 ## Télécharger l'exécutable
 
-Chaque push construit automatiquement `REKA.exe` sur une machine Windows de GitHub
+Chaque push construit automatiquement `VoiceConnector.exe` sur une machine Windows de GitHub
 (onglet **Actions**, workflow *Build Windows*) et le publie dans une release
 **build-&lt;branche&gt;** (onglet **Releases**). Rien à installer pour le compiler.
 
@@ -31,7 +29,7 @@ localiser l'exécutable s'il est installé ailleurs.
 Les effets s'appliquent grâce à l'**insert** de Voicemeeter : chaque strip envoie son son
 à REAPER, qui le renvoie traité. Une seule chose à régler, une fois :
 
-1. Lance REKA.
+1. Lance VoiceConnector.
 2. Clique sur ⚙ (panneau Master) → **Ouvrir les préférences audio de REAPER**.
 3. Dans REAPER : *Audio system* = **ASIO**, pilote = **Voicemeeter Insert Virtual ASIO**
    (« Voicemeeter Potato Insert Virtual ASIO » selon la version). Valide, puis ferme les
@@ -43,7 +41,7 @@ passe sans effets plutôt que d'être coupé.
 
 ## Projet REAPER
 
-Au premier lancement, REKA ouvre un **projet vierge** : une piste câblée par strip,
+Au premier lancement, VoiceConnector ouvre un **projet vierge** : une piste câblée par strip,
 aucun effet. Pour ouvrir ton propre projet (ton traitement, tes VST) :
 
 - clique sur le bouton **Projet** du panneau Master (ou ⚙ → *Changer de projet…*) ;
@@ -75,29 +73,29 @@ sur son insert (désactivable dans ⚙ → Options).
 | Knob Casque | volume du bus A1 (double-clic = 0 dB) |
 | Badge de connexion | vert = tout répond ; rouge = le moteur d'effets ou Voicemeeter ne répond plus |
 | Bouton Projet | projet REAPER ouvert, clic pour en changer ; FL Studio / Equalizer APO : l'ouvrir |
-| Bouton – (Master) | réduire REKA (barre des tâches, ou zone de notification si activé) |
+| Bouton – (Master) | réduire VoiceConnector (barre des tâches, ou zone de notification si activé) |
 | Bouton ⚙ (Master) | réglages : Général, Canaux, Audio, Apparence, À propos |
 
-`REKA.exe --demo` ouvre la console avec des moteurs simulés (sans Voicemeeter ni REAPER)
+`VoiceConnector.exe --demo` ouvre la console avec des moteurs simulés (sans Voicemeeter ni REAPER)
 pour la découvrir ; `--demo --host flstudio` (ou `apo`, `none`) montre les autres moteurs
 d'effets.
 
 ## Moteurs d'effets : REAPER, FL Studio, Equalizer APO ou aucun
 
-Au premier lancement, REKA affiche un **menu de sélection** : l'édition de Voicemeeter
+Au premier lancement, VoiceConnector affiche un **menu de sélection** : l'édition de Voicemeeter
 (Potato ou Banana) et l'application qui applique les effets aux strips. Chaque choix
 indique s'il est installé sur le PC et le délai qu'il ajoute à la voix. On le retrouve dans
-⚙ → **Général** (*Voicemeeter* / *Effets*, puis **Redémarrer REKA**), ou en lançant
-`REKA.exe --setup`.
+⚙ → **Général** (*Voicemeeter* / *Effets*, puis **Redémarrer VoiceConnector**), ou en lançant
+`VoiceConnector.exe --setup`.
 
 | Moteur | Effets | Délai ajouté |
 |---|---|---|
-| **REAPER** | VST2/VST3/CLAP gérés depuis REKA : ajout, bypass, interface, projets | 2 tampons ASIO (insert) + plugins |
+| **REAPER** | VST2/VST3/CLAP gérés depuis VoiceConnector : ajout, bypass, interface, projets | 2 tampons ASIO (insert) + plugins |
 | **FL Studio** | réglés dans FL Studio (le « + » d'une strip l'affiche) | 2 tampons ASIO (insert) + plugins |
-| **Equalizer APO** | plugins VST2 64 bits gérés depuis REKA, appliqués par Windows | plugins seulement |
+| **Equalizer APO** | plugins VST2 64 bits gérés depuis VoiceConnector, appliqués par Windows | plugins seulement |
 | **Aucun** | Voicemeeter seul : volumes, routing, VU | aucun |
 
-- **FL Studio** : REKA le lance (masqué) sur le projet choisi dans ⚙ → Général et le ferme
+- **FL Studio** : VoiceConnector le lance (masqué) sur le projet choisi dans ⚙ → Général et le ferme
   en partant. Dans FL Studio, choisis *Voicemeeter Insert Virtual ASIO* (Options → Audio
   settings), puis une piste du mixer par strip, entrée et sortie sur les canaux d'insert de
   la strip (rappelés dans ⚙ → Audio). Le **badge FX** d'une strip envoie alors son son à
@@ -106,8 +104,8 @@ indique s'il est installé sur le PC et le délai qu'il ajoute à la voix. On le
   *Configurator*). Les entrées virtuelles ont leur périphérique (*Voicemeeter Input*, *AUX*,
   *VAIO3*) ; pour le micro, choisis-le au premier ajout d'effet ou dans ⚙ → Audio, et coche
   *Entrées WDM en mode partagé* (sinon Windows, donc APO, ne voit pas le son du micro).
-  REKA écrit `reka.txt` dans le dossier `config` d'Equalizer APO et ajoute une seule ligne
-  `Include: reka.txt` à `config.txt` : le reste de ta configuration n'est pas touché. Les
+  VoiceConnector écrit `voiceconnector.txt` dans le dossier `config` d'Equalizer APO et ajoute une seule ligne
+  `Include: voiceconnector.txt` à `config.txt` : le reste de ta configuration n'est pas touché. Les
   réglages des plugins faits dans l'éditeur d'Equalizer APO sont conservés.
 
 ## Délai de la voix
@@ -151,18 +149,18 @@ Si tes périphériques ont d'autres noms, indique-les dans `config.json`
 
 ## Mises à jour
 
-REKA vérifie au démarrage (puis toutes les 6 heures) si une nouvelle version est en ligne.
+VoiceConnector vérifie au démarrage (puis toutes les 6 heures) si une nouvelle version est en ligne.
 Si oui, une pill **Mise à jour** apparaît dans le panneau Master :
 
-- **Mettre à jour** : REKA télécharge le nouvel exe, vérifie qu'il est complet (empreinte
+- **Mettre à jour** : VoiceConnector télécharge le nouvel exe, vérifie qu'il est complet (empreinte
   SHA-256), le met à la place de l'ancien puis redémarre dessus. Réglages et projet REAPER
   sont conservés.
-- **Navigateur** : télécharge REKA.exe à la main ; **Plus tard** ; **Ignorer cette
-  version** (REKA ne la propose plus, sauf recherche manuelle).
+- **Navigateur** : télécharge VoiceConnector.exe à la main ; **Plus tard** ; **Ignorer cette
+  version** (VoiceConnector ne la propose plus, sauf recherche manuelle).
 
 ⚙ → **À propos** : version et numéro de build, **Rechercher une mise à jour**, et l'option
 **Vérifier les mises à jour au démarrage**. Chaque build GitHub publie, à côté de
-`REKA.exe`, un `version.json` (numéro de build, taille, empreinte) que REKA consulte.
+`VoiceConnector.exe`, un `version.json` (numéro de build, taille, empreinte) que VoiceConnector consulte.
 
 ## Personnaliser l'interface
 
@@ -173,19 +171,19 @@ Si oui, une pill **Mise à jour** apparaît dans le panneau Master :
   suite (knobs, VU-mètres, boutons, fonds teintés) ; le rouge du Muet et du petit cube
   reste rouge.
 - **Arrière-plan** : *Choisir une image…* (PNG, JPG, WebP…). L'image est copiée dans
-  `%APPDATA%\REKA`, cadrée pour remplir la fenêtre, et peut être assombrie (curseur
-  *Assombrir l'image*). *Fond d'origine* revient au fond REKA.
+  `%APPDATA%\VoiceConnector`, cadrée pour remplir la fenêtre, et peut être assombrie (curseur
+  *Assombrir l'image*). *Fond d'origine* revient au fond VoiceConnector.
 - **Opacité des panneaux** : baisse-la pour voir l'image à travers les strips.
-- **Fenêtre** : REKA s'ouvre en fenêtre compacte, comme Voicemeeter (juste les strips et
+- **Fenêtre** : VoiceConnector s'ouvre en fenêtre compacte, comme Voicemeeter (juste les strips et
   le Master) ; sa taille et sa position sont mémorisées. *Taille compacte* la remet à sa
   taille d'origine, centrée. Coche *Réduire dans la zone de notification* pour que le
-  bouton **–** l'envoie à côté de l'horloge (le son continue ; clic sur l'icône REKA pour
-  la rouvrir, clic droit → *Quitter REKA*).
+  bouton **–** l'envoie à côté de l'horloge (le son continue ; clic sur l'icône VoiceConnector pour
+  la rouvrir, clic droit → *Quitter VoiceConnector*).
 
 ## Voicemeeter Potato ou Banana
 
 ⚙ → onglet **Général** → *Voicemeeter* : choisis **Potato** (8 entrées, 6 strips) ou
-**Banana** (5 entrées, 5 strips), puis **Redémarrer REKA**. REKA lance alors la bonne
+**Banana** (5 entrées, 5 strips), puis **Redémarrer VoiceConnector**. VoiceConnector lance alors la bonne
 édition et ouvre un projet vierge adapté (`session-banana.rpp` pour Banana). Ferme l'autre
 édition de Voicemeeter si elle tourne encore. Sur Banana, les knobs d'envoi sont de simples
 interrupteurs on/off (Banana n'a pas de niveaux d'envoi par bus).
@@ -208,14 +206,14 @@ Les canaux sont ceux de l'insert Voicemeeter (entrée de la piste REAPER). Modif
 
 - **Voicemeeter** : API Remote via `voicemeeterlib`. Un thread lit paramètres et niveaux
   à 30 Hz ; les réglages de l'UI sont envoyés sans bloquer l'interface.
-- **REAPER** : un petit script Lua (`assets/reka_bridge.lua`) tourne dans REAPER et
-  échange avec l'app par fichiers texte dans `%APPDATA%\REKA\bridge`. Il utilise
+- **REAPER** : un petit script Lua (`assets/voiceconnector_bridge.lua`) tourne dans REAPER et
+  échange avec l'app par fichiers texte dans `%APPDATA%\VoiceConnector\bridge`. Il utilise
   directement l'API de REAPER (ajout d'un plugin par son nom, suppression, bypass,
   ouverture des interfaces, ouverture de projet, sauvegarde). L'OSC natif de REAPER ne
   sait pas faire tout ça et demanderait un réglage manuel.
 - Le pont est chargé par un bloc ajouté en tête de `Scripts\__startup.lua` de REAPER. Ce
   bloc ne fait rien quand tu lances REAPER toi-même : il ne s'active que si REAPER est
-  lancé par REKA.
+  lancé par VoiceConnector.
 - Le projet ouvert est sauvegardé à chaque changement d'effet, toutes les 30 s s'il a
   été modifié, et à la fermeture.
 - Fenêtres : Voicemeeter et REAPER sont masqués (et re-masqués s'ils réapparaissent).
@@ -224,19 +222,19 @@ Les canaux sont ceux de l'insert Voicemeeter (entrée de la piste REAPER). Modif
   propre de Voicemeeter (`Command.Shutdown`). Un Voicemeeter déjà ouvert avant l'app
   n'est pas fermé : il est simplement ré-affiché.
 
-Relancer `REKA.exe` alors que REKA tourne déjà (par exemple cachée près de l'horloge)
+Relancer `VoiceConnector.exe` alors que VoiceConnector tourne déjà (par exemple cachée près de l'horloge)
 ré-affiche simplement la fenêtre.
 
 Si une autre édition de Voicemeeter est ouverte au démarrage, ou si seule l'autre édition
-est installée, REKA propose de l'utiliser directement.
+est installée, VoiceConnector propose de l'utiliser directement.
 
 ## Fichiers
 
 ```
-%APPDATA%\REKA\
+%APPDATA%\VoiceConnector\
   config.json      réglages (copie modifiable du config.json livré)
   app.log          journal (3 × 2 Mo)
-  session.rpp      projet vierge de REKA (session-banana.rpp pour Banana)
+  session.rpp      projet vierge de VoiceConnector (session-banana.rpp pour Banana)
   background.*     image d'arrière-plan choisie
   processes.json   processus lancés par l'app (reprise après plantage)
   bridge\          échanges avec le pont Lua
@@ -270,7 +268,7 @@ python -m pip install -r requirements.txt pytest
 python main.py            # la vraie console
 python main.py --demo     # moteurs simulés
 python -m pytest tests    # tests (le pont Lua est testé si lua5.4 est installé)
-python -m PyInstaller --noconfirm --clean build.spec   # → dist\REKA.exe
+python -m PyInstaller --noconfirm --clean build.spec   # → dist\VoiceConnector.exe
 ```
 
 Avec le Python du Microsoft Store, `pip` peut échouer sur des chemins trop longs : active
@@ -286,14 +284,14 @@ Arborescence :
 reaper_mixer/
 ├── main.py                 démarrage, écran de chargement, popups, arrêt
 ├── core/
-│   ├── config.py           config.json (défauts + %APPDATA%\REKA), chemins
+│   ├── config.py           config.json (défauts + %APPDATA%\VoiceConnector), chemins
 │   ├── process_manager.py  moteurs (recherche, lancement, masquage, arrêt), projet REAPER
 │   ├── voicemeeter_ctrl.py faders, mutes, routing, envois, insert, VU (30 Hz)
 │   ├── reaper_ctrl.py      liaison avec le pont Lua (effets, pistes, projet, carte son)
 │   ├── vst_scanner.py      liste des plugins (REAPER, cache, dossiers VST3)
 │   └── demo.py             moteurs simulés (--demo, --selftest)
 ├── ui/                     fenêtre, strips, master, knob/fader/VU dessinés, dialogues
-├── assets/                 logo et icône REKA, police Inter, pont Lua
+├── assets/                 logo et icône VoiceConnector, police Inter, pont Lua
 ├── tests/                  tests (logique, pont Lua, interface, Win32)
 ├── config.json
 ├── requirements.txt

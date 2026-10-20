@@ -1,15 +1,15 @@
 """
-Mises à jour de REKA.
+Mises à jour de VoiceConnector.
 
 Chaque build GitHub embarque `build_info.json` (version, numéro de build,
-dépôt, release) et publie, à côté de REKA.exe, un `version.json` qui décrit
+dépôt, release) et publie, à côté de VoiceConnector.exe, un `version.json` qui décrit
 l'exe en ligne (numéro de build, taille, empreinte SHA-256, notes).
 
-- REKA lit ce version.json (au démarrage puis régulièrement) : si le build en
+- VoiceConnector lit ce version.json (au démarrage puis régulièrement) : si le build en
   ligne est plus récent, l'interface le signale.
 - « Mettre à jour » télécharge le nouvel exe, vérifie taille et empreinte,
   puis le met à la place de l'exe en cours : Windows interdit d'écraser un exe
-  qui tourne mais permet de le renommer (REKA.exe → REKA.old.exe). REKA
+  qui tourne mais permet de le renommer (VoiceConnector.exe → VoiceConnector.old.exe). VoiceConnector
   redémarre ensuite sur le nouvel exe, qui supprime l'ancien.
 
 En développement (python main.py), pas de build_info.json : pas de vérification.
@@ -54,7 +54,7 @@ class BuildInfo:
     build: int
     commit: str
     repo: str          # « owner/dépôt » GitHub
-    tag: str           # release où sont publiés REKA.exe et version.json
+    tag: str           # release où sont publiés VoiceConnector.exe et version.json
 
     def describe(self) -> str:
         return f"{self.version} (build {self.build})"
@@ -65,7 +65,7 @@ class UpdateInfo:
     version: str
     build: int
     commit: str
-    url: str           # REKA.exe en ligne
+    url: str           # VoiceConnector.exe en ligne
     sha256: str
     size: int
     notes: str
@@ -195,11 +195,11 @@ def install(new_exe: Path, current: Path) -> None:
     try:
         old.unlink(missing_ok=True)         # reste d'une mise à jour précédente
     except OSError as exc:
-        raise UpdateError(f"Impossible de remplacer REKA dans {current.parent} ({exc}).") from exc
+        raise UpdateError(f"Impossible de remplacer VoiceConnector dans {current.parent} ({exc}).") from exc
     try:
         os.replace(current, old)
     except OSError as exc:
-        raise UpdateError(f"Impossible de remplacer REKA dans {current.parent} ({exc}).") from exc
+        raise UpdateError(f"Impossible de remplacer VoiceConnector dans {current.parent} ({exc}).") from exc
     try:
         shutil.move(str(new_exe), str(current))
     except Exception as exc:
@@ -305,7 +305,7 @@ class UpdateDownloader(QObject):
         self._cancel.set()
 
     def _run(self) -> None:
-        dest = update_dir() / f"REKA-{self._update.build}.exe"
+        dest = update_dir() / f"VoiceConnector-{self._update.build}.exe"
         try:
             path = download(self._update, dest, self.progress.emit, self._cancel.is_set)
         except UpdateError as exc:

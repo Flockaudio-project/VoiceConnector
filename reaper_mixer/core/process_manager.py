@@ -2,14 +2,14 @@
 Gestion des processus Voicemeeter et REAPER : recherche, lancement, masquage
 et arrêt.
 
-L'utilisateur ne doit voir que REKA : les deux moteurs tournent avec
+L'utilisateur ne doit voir que VoiceConnector : les deux moteurs tournent avec
 leur fenêtre principale masquée (ShowWindow SW_HIDE). Un chien de garde
 re-masque ces fenêtres si un moteur les ré-affiche de lui-même. Seules les
 fenêtres *principales* sont visées : les fenêtres de plugins VST ouvertes
 depuis l'app restent visibles.
 
 Qui arrête quoi à la fermeture :
-  - un processus lancé par REKA (ou resté orphelin après un plantage,
+  - un processus lancé par VoiceConnector (ou resté orphelin après un plantage,
     reconnu grâce à processes.json) est arrêté si terminate_on_exit = true ;
   - un Voicemeeter déjà ouvert par l'utilisateur est seulement « emprunté » :
     masqué pendant la session, puis ré-affiché en partant ;
@@ -116,7 +116,7 @@ def running_voicemeeter_kind() -> str | None:
 
 
 def installed_voicemeeter_kinds(configured: str | None = None) -> list[str]:
-    """Éditions gérées par REKA (Potato, Banana) installées sur ce PC."""
+    """Éditions gérées par VoiceConnector (Potato, Banana) installées sur ce PC."""
     return [kind for kind in EDITIONS
             if find_executable(voicemeeter_spec(kind), configured) is not None]
 
@@ -207,7 +207,7 @@ class AppNotInstalledError(ProcessManagerError):
 
 class ProcessConflictError(ProcessManagerError):
     def __init__(self, spec: AppSpec, pid: int) -> None:
-        super().__init__(f"{spec.name} est déjà ouvert en dehors de REKA (PID {pid}).")
+        super().__init__(f"{spec.name} est déjà ouvert en dehors de VoiceConnector (PID {pid}).")
         self.hint = f"Ferme {spec.name}, puis clique sur « Réessayer »."
 
 
@@ -216,17 +216,17 @@ class ProcessStartError(ProcessManagerError):
 
 
 class OtherEditionRunningError(ProcessManagerError):
-    """Une autre édition de Voicemeeter tourne déjà : REKA piloterait les
+    """Une autre édition de Voicemeeter tourne déjà : VoiceConnector piloterait les
     mauvaises strips (les index ne sont pas les mêmes d'une édition à l'autre)."""
 
     def __init__(self, running_kind: str, wanted_kind: str) -> None:
         running, wanted = running_kind.capitalize(), wanted_kind.capitalize()
-        super().__init__(f"Voicemeeter {running} est ouvert, mais REKA est réglé sur "
+        super().__init__(f"Voicemeeter {running} est ouvert, mais VoiceConnector est réglé sur "
                          f"Voicemeeter {wanted}.")
         self.running_kind = running_kind
         self.wanted_kind = wanted_kind
         self.hint = (f"Ferme Voicemeeter {running} puis clique sur « Réessayer », "
-                     f"ou passe REKA sur {running}.")
+                     f"ou passe VoiceConnector sur {running}.")
 
 
 class StartupAborted(Exception):
@@ -245,7 +245,7 @@ def blank_project_path(cfg: dict) -> Path:
 
 
 def is_blank_project(path: str | Path) -> bool:
-    """Projet vierge de REKA : session.rpp / session-<édition>.rpp de son
+    """Projet vierge de VoiceConnector : session.rpp / session-<édition>.rpp de son
     dossier de données (un projet perso nommé « session… » ailleurs n'en est pas un)."""
     path = Path(path)
     names = {SESSION_PROJECT_NAME} | {f"session-{kind}.rpp" for kind in EDITIONS}
@@ -280,7 +280,7 @@ def build_blank_project(names: list[str], channels: list[int]) -> str:
 
 
 def blank_project(cfg: dict) -> Path | None:
-    """Projet vierge de REKA (une piste câblée par strip, aucun effet) : créé au
+    """Projet vierge de VoiceConnector (une piste câblée par strip, aucun effet) : créé au
     premier besoin, puis réutilisé (ses effets sont conservés). Un template
     personnalisé (reaper.template) est copié à la place s'il est défini."""
     project = blank_project_path(cfg)
@@ -302,7 +302,7 @@ def blank_project(cfg: dict) -> Path | None:
 
 def reaper_project(cfg: dict, choice: str | None = None) -> Path | None:
     """Projet à ouvrir : `choice` s'il est donné, sinon le projet par défaut
-    (reaper.project). Vide = projet vierge de REKA. Un projet introuvable
+    (reaper.project). Vide = projet vierge de VoiceConnector. Un projet introuvable
     (déplacé, supprimé) est remplacé par le projet vierge."""
     wanted = cfg.get("reaper", {}).get("project", "") if choice is None else choice
     path = config.resolve_path(wanted, base=config.app_data_dir())
@@ -520,7 +520,7 @@ class ProcessManager:
     def start_reaper(self, prepare: Callable[[Path], dict[str, str]] | None = None,
                      project: str | None = None) -> bool:
         """Lance REAPER sur un projet : `project` s'il est donné ("" = projet
-        vierge de REKA), sinon le projet par défaut de la config.
+        vierge de VoiceConnector), sinon le projet par défaut de la config.
 
         `prepare(exe)` est appelé avant le lancement avec le chemin de reaper.exe
         (installation du pont Lua) et renvoie des variables d'environnement à
@@ -575,7 +575,7 @@ class ProcessManager:
         """True si shutdown() arrêtera ce processus : les contrôleurs peuvent
         alors demander un arrêt propre au moteur avant (sauvegarde, etc.).
         FL Studio reste ouvert par défaut : son projet n'est pas sauvegardé
-        par REKA, une fermeture forcée perdrait les réglages des effets."""
+        par VoiceConnector, une fermeture forcée perdrait les réglages des effets."""
         managed = self._get(key)
         return bool(
             managed is not None

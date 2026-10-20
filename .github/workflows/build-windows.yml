@@ -1,4 +1,4 @@
-# Construit « REKA.exe » sur une machine Windows de GitHub à chaque push,
+# Construit « VoiceConnector.exe » sur une machine Windows de GitHub à chaque push,
 # après les tests, et le publie dans une release téléchargeable.
 name: Build Windows
 
@@ -131,7 +131,7 @@ jobs:
             --notes "Exécutable Windows construit automatiquement depuis $GITHUB_SHA.
 
           Télécharge **VoiceConnector.exe** et lance-le. Il faut Voicemeeter (Potato ou Banana) et REAPER installés.
-          VoiceConnector est développé par Regrettable. Merci à Zerka et Fyra pour leur contribution.
+          VoiceConnector est développé par Zerka.
           Pour voir la console sans eux : \`VoiceConnector.exe --demo\`.
           console.png : rendu de l'auto-test fait par ce build."
       - name: Release commune « build-latest » (mises à jour de tous les exe)

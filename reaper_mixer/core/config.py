@@ -1,11 +1,11 @@
 """
-Configuration de REKA : emplacements des fichiers et lecture/écriture de
+Configuration de VoiceConnector : emplacements des fichiers et lecture/écriture de
 config.json.
 
 - Le config.json livré avec l'application contient les valeurs par défaut.
   Une fois buildé avec PyInstaller (--onefile), il est extrait dans un dossier
   temporaire en lecture seule : on ne le modifie donc jamais.
-- La config de l'utilisateur vit dans %APPDATA%/REKA/config.json.
+- La config de l'utilisateur vit dans %APPDATA%/VoiceConnector/config.json.
   Elle est créée au premier lancement, puis fusionnée avec les défauts à chaque
   démarrage : les nouvelles clés ajoutées par une mise à jour apparaissent
   toutes seules, sans écraser les réglages existants.
@@ -22,10 +22,9 @@ import threading
 from pathlib import Path
 from typing import Any
 
-APP_NAME = "REKA"
+APP_NAME = "VoiceConnector"
 APP_VERSION = "0.5.0"
-APP_AUTHORS = "Regrettable"
-APP_THANKS = "Zerka et Fyra"   # remerciements pour leur contribution
+APP_AUTHORS = "Zerka"
 CONFIG_FILENAME = "config.json"
 LEGACY_DIR_NAME = "REAPER Mixer"   # ancien nom de l'application (données reprises)
 
@@ -54,11 +53,11 @@ def resource_path(relative: str | Path) -> Path:
 
 
 def app_data_dir() -> Path:
-    """Dossier de données utilisateur : %APPDATA%/REKA (créé si besoin).
+    """Dossier de données utilisateur : %APPDATA%/VoiceConnector (créé si besoin).
 
     Au premier lancement sous ce nom, les données de l'ancien dossier
     « REAPER Mixer » (config, projet de session…) sont reprises.
-    Hors Windows (dev uniquement), repli sur ~/.config/REKA.
+    Hors Windows (dev uniquement), repli sur ~/.config/VoiceConnector.
     """
     base = os.environ.get("APPDATA")
     root = Path(base) if base else Path.home() / ".config"

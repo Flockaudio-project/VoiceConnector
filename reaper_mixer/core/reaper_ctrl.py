@@ -1,5 +1,5 @@
 """
-Pilotage de REAPER à travers le pont Lua (assets/reka_bridge.lua).
+Pilotage de REAPER à travers le pont Lua (assets/voiceconnector_bridge.lua).
 
 Pourquoi un pont plutôt que l'OSC natif de REAPER : l'OSC ne sait ni compter
 les effets d'une piste, ni insérer un plugin par son nom, et il faut l'activer
@@ -7,9 +7,9 @@ les effets d'une piste, ni insérer un plugin par son nom, et il faut l'activer
 (TrackFX_AddByName, TrackFX_Delete…) et ne demande aucun réglage.
 
 Fonctionnement :
-  - prepare_launch() copie le pont dans %APPDATA%/REKA/bridge et ajoute à
+  - prepare_launch() copie le pont dans %APPDATA%/VoiceConnector/bridge et ajoute à
     Scripts/__startup.lua de REAPER un petit bloc qui le charge, mais
-    seulement si REAPER a été lancé par l'app (variable REKA_IPC) ;
+    seulement si REAPER a été lancé par l'app (variable VOICECONNECTOR_IPC) ;
   - un thread lit state.txt (~20 fois/s) : projet, pistes, effets, carte son,
     accusés de réception, et sert de battement de cœur (connecté / déconnecté) ;
   - les commandes sont numérotées et réécrites dans commands.txt tant que le
@@ -39,11 +39,11 @@ from core.voicemeeter_ctrl import strip_channels
 
 log = logging.getLogger(__name__)
 
-BRIDGE_FILENAME = "reka_bridge.lua"
-IPC_ENV = "REKA_IPC"
+BRIDGE_FILENAME = "voiceconnector_bridge.lua"
+IPC_ENV = "VOICECONNECTOR_IPC"
 # ASCII uniquement : le fichier de l'utilisateur peut être dans n'importe quel encodage
-STARTUP_BEGIN = "-- >>> REKA (bloc gere automatiquement, ne pas modifier)"
-STARTUP_END = "-- <<< REKA"
+STARTUP_BEGIN = "-- >>> VoiceConnector (bloc gere automatiquement, ne pas modifier)"
+STARTUP_END = "-- <<< VoiceConnector"
 # Blocs posés par les versions précédentes (nom « REAPER Mixer ») : retirés
 LEGACY_STARTUP_MARKERS = (("-- >>> REAPER Mixer", "-- <<< REAPER Mixer"),)
 POLL_INTERVAL_S = 0.05

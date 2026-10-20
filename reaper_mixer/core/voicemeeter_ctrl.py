@@ -555,8 +555,8 @@ class VoicemeeterController(QObject):
 
     def _reassert_inserts(self) -> None:
         """Après une coupure (Voicemeeter relancé, plantage) : les inserts que
-        REKA avait activés le sont de nouveau, sinon les effets seraient
-        contournés jusqu'au redémarrage de REKA."""
+        VoiceConnector avait activés le sont de nouveau, sinon les effets seraient
+        contournés jusqu'au redémarrage de VoiceConnector."""
         try:
             for channel in sorted(self._inserts_saved):
                 self._remote.set(f"patch.insert[{channel}]", 1.0)

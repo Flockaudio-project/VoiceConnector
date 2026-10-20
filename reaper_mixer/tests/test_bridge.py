@@ -34,7 +34,7 @@ def test_bridge_end_to_end(qapp, cfg, tmp_path):
     env = ctrl.prepare_launch(Path("reaper.exe"))
     startup = tmp_path / "reaper_res" / "Scripts" / "__startup.lua"
     stop = tmp_path / "stop"
-    summary_path = Path(env["REKA_IPC"]) / "fake_summary.txt"
+    summary_path = Path(env["VOICECONNECTOR_IPC"]) / "fake_summary.txt"
     proc = subprocess.Popen([LUA, str(HERE / "fake_reaper.lua"), str(startup), str(stop)],
                             env={**os.environ, **env},
                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -121,4 +121,4 @@ def test_bridge_end_to_end(qapp, cfg, tmp_path):
         proc.wait(10)
 
     assert "saved=0" not in summary()
-    assert (Path(env["REKA_IPC"]) / "state.txt").read_text().startswith("CLOSED")
+    assert (Path(env["VOICECONNECTOR_IPC"]) / "state.txt").read_text().startswith("CLOSED")

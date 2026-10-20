@@ -1,5 +1,5 @@
 """
-Réglages de REKA, en onglets :
+Réglages de VoiceConnector, en onglets :
   - Général    : projet REAPER, édition de Voicemeeter (Potato / Banana),
                  chemins des moteurs
   - Audio      : carte son de REAPER, affichage des moteurs, options
@@ -40,9 +40,9 @@ BACKGROUND_STEM = "background"
 
 def project_label(path: str) -> str:
     if not path:
-        return "Projet vierge REKA (aucun effet)"
+        return "Projet vierge VoiceConnector (aucun effet)"
     if is_blank_project(path):
-        return f"Projet vierge REKA — {path}"
+        return f"Projet vierge VoiceConnector — {path}"
     return f"{Path(path).stem} — {path}"
 
 
@@ -137,7 +137,7 @@ class SettingsDialog(QDialog):
         layout.setSpacing(12)
         header = QHBoxLayout()
         logo = QLabel()
-        pixmap = QPixmap(str(config.resource_path("assets/reka_mark.png")))
+        pixmap = QPixmap(str(config.resource_path("assets/voiceconnector_mark.png")))
         if not pixmap.isNull():
             logo.setPixmap(pixmap.scaledToHeight(30, Qt.TransformationMode.SmoothTransformation))
         header.addWidget(logo)
@@ -245,7 +245,7 @@ class SettingsDialog(QDialog):
         restart_row = QHBoxLayout()
         self.edition_hint = _hint("")
         restart_row.addWidget(self.edition_hint, 1)
-        self.restart_button = QPushButton("Redémarrer REKA")
+        self.restart_button = QPushButton("Redémarrer VoiceConnector")
         self.restart_button.clicked.connect(self._restart)
         restart_row.addWidget(self.restart_button)
         form.addRow(restart_row)
@@ -404,7 +404,7 @@ class SettingsDialog(QDialog):
             "terminate_on_exit", host_section != HOST_FLSTUDIO)))
         if host_section == HOST_FLSTUDIO:
             self.close_reaper.setToolTip("Décoché : FL Studio reste ouvert et réapparaît quand tu "
-                                         "quittes REKA, pour enregistrer ton projet.")
+                                         "quittes VoiceConnector, pour enregistrer ton projet.")
         self.close_reaper.setVisible(self._running_host in (HOST_REAPER, HOST_FLSTUDIO))
         box.addWidget(self.close_reaper)
         self._close_section = host_section
@@ -538,7 +538,7 @@ class SettingsDialog(QDialog):
         self.minimize_to_tray.toggled.connect(lambda on: self._cfg.setdefault("ui", {})
                                               .__setitem__("minimize_to_tray", on))
         box.addWidget(self.minimize_to_tray)
-        box.addWidget(_hint("REKA reste ouverte et le son continue : clique sur l'icône REKA "
+        box.addWidget(_hint("VoiceConnector reste ouverte et le son continue : clique sur l'icône VoiceConnector "
                             "près de l'horloge pour la rouvrir."))
         return group
 
@@ -550,7 +550,7 @@ class SettingsDialog(QDialog):
         box.setSpacing(10)
         logo = QLabel()
         logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        pixmap = QPixmap(str(config.resource_path("assets/reka_logo.png")))
+        pixmap = QPixmap(str(config.resource_path("assets/voiceconnector_logo.png")))
         if not pixmap.isNull():
             logo.setPixmap(pixmap.scaledToWidth(300, Qt.TransformationMode.SmoothTransformation))
         box.addWidget(logo)
@@ -563,10 +563,6 @@ class SettingsDialog(QDialog):
         credits.setObjectName("credits")
         credits.setAlignment(Qt.AlignmentFlag.AlignCenter)
         box.addWidget(credits)
-        thanks = QLabel(f"Merci à <b>{config.APP_THANKS}</b> pour leur contribution")
-        thanks.setObjectName("credits")
-        thanks.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        box.addWidget(thanks)
         about = _hint("Console de mixage pour Voicemeeter et REAPER.")
         about.setAlignment(Qt.AlignmentFlag.AlignCenter)
         box.addWidget(about)
@@ -622,12 +618,12 @@ class SettingsDialog(QDialog):
 
     def _on_update_available(self, update) -> None:
         self.check_update.setEnabled(True)
-        self.update_status.setText(f"REKA {update.describe()} est disponible.")
+        self.update_status.setText(f"VoiceConnector {update.describe()} est disponible.")
         self.install_update.show()
 
     def _on_up_to_date(self) -> None:
         self.check_update.setEnabled(True)
-        self.update_status.setText("REKA est à jour.")
+        self.update_status.setText("VoiceConnector est à jour.")
         self.install_update.hide()
 
     def _on_update_failed(self, message: str) -> None:
@@ -710,10 +706,10 @@ class SettingsDialog(QDialog):
         self.restart_button.setVisible(edition_pending or host_pending)
         if edition_pending:
             self.edition_hint.setText(
-                f"Redémarre REKA pour passer à {chosen.label.split(' (')[0]}. "
+                f"Redémarre VoiceConnector pour passer à {chosen.label.split(' (')[0]}. "
                 "Ferme l'autre édition de Voicemeeter si elle tourne encore.")
         elif host_pending:
-            self.edition_hint.setText(f"Redémarre REKA pour utiliser {HOSTS[host].label} "
+            self.edition_hint.setText(f"Redémarre VoiceConnector pour utiliser {HOSTS[host].label} "
                                       "comme moteur d'effets.")
         else:
             self.edition_hint.setText(f"{chosen.label} : {len(strip_map(self._cfg))} strips, "
@@ -754,7 +750,7 @@ class SettingsDialog(QDialog):
             self.set_background(Path(path))
 
     def set_background(self, source: Path) -> None:
-        """Copie l'image dans %APPDATA%/REKA (elle reste valable même si
+        """Copie l'image dans %APPDATA%/VoiceConnector (elle reste valable même si
         l'original est déplacé) et l'applique."""
         target = config.app_data_dir() / f"{BACKGROUND_STEM}{source.suffix.lower()}"
         self._remove_background_files(keep=target if source.resolve() == target.resolve() else None)
@@ -777,7 +773,7 @@ class SettingsDialog(QDialog):
     def _show_background(self) -> None:
         name = self._cfg.get("ui", {}).get("background_image", "")
         has_image = bool(name)
-        self.background_label.setText("Image personnalisée" if has_image else "Fond d'origine REKA")
+        self.background_label.setText("Image personnalisée" if has_image else "Fond d'origine VoiceConnector")
         self.remove_background.setEnabled(has_image)
         self.darkness.setEnabled(has_image)
 

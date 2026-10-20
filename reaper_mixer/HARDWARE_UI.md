@@ -11,7 +11,9 @@
 | `ui/strip_widget.py` | tranche crème ; mêmes signaux et attributs, + `soloToggled`, `trimChanged`, `compChanged`, `gateChanged` |
 | `ui/master_widget.py` | `OutputsPanel` (A1–A3) + `MasterWidget` refait (MUTE/EJECT ALL, MASTER, VU LED, spectre, 2 VU à aiguille, magnéto, INTELLIPAN EQ) |
 | `ui/main_window.py` | châssis, logo, groupes d'entrées, matrice, câblage ; `LAYOUT_VERSION = 3` |
-| `assets/voiceconnector_logo.png` | logo recadré depuis l'image fournie |
+| `assets/voiceconnector_logo.png` | logo VoiceConnector complet (fond clair) : écran de chargement, rack, onglet À propos |
+| `assets/voiceconnector_mark.png` | emblème seul (boucle + onde, fond clair) : en-têtes des fenêtres |
+| `assets/icon.ico` | icône VoiceConnector (tuile claire, 16 à 256 px) : fenêtre, barre des tâches, zone de notification, `VoiceConnector.exe` |
 | `tests/test_hardware_ui.py` (nouveau), `tests/test_logic.py` | nouveaux tests ; assertions de thème par défaut mises à jour |
 
 ## Ce qui est relié au moteur (signaux d'origine conservés)

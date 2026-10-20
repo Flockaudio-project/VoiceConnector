@@ -34,7 +34,7 @@ from core.updater import UpdateChecker, UpdateInfo
 from core.voicemeeter_ctrl import DEFAULT_ROUTING, MixerLevels, MixerParams
 from ui import styles
 from ui.app_mixer import AppMixerPopup
-from ui.hardware_widgets import CHEEK_W, LedMatrix, LogoLabel, paint_chassis
+from ui.hardware_widgets import CHEEK_W, LedMatrix, paint_chassis
 from ui.master_widget import MasterWidget, OutputsPanel
 from ui.project_dialog import ProjectDialog
 from ui.settings_dialog import SettingsDialog
@@ -62,13 +62,13 @@ DEFAULT_UPDATE_HOURS = 6
 
 
 def background_image_path(cfg: dict) -> Path | None:
-    """Image d'arrière-plan choisie (copiée dans %APPDATA%/REKA), ou None."""
+    """Image d'arrière-plan choisie (copiée dans %APPDATA%/VoiceConnector), ou None."""
     path = config.resolve_path(cfg.get("ui", {}).get("background_image"), base=config.app_data_dir())
     return path if path is not None and path.is_file() else None
 
 
 def restart_command() -> tuple[str, list[str]]:
-    """Commande qui relance REKA (exe ou script), avec --restart pour attendre
+    """Commande qui relance VoiceConnector (exe ou script), avec --restart pour attendre
     que l'instance actuelle ait fini de s'arrêter."""
     if getattr(sys, "frozen", False):
         return sys.executable, ["--restart"]
@@ -76,7 +76,7 @@ def restart_command() -> tuple[str, list[str]]:
 
 
 def launch_restart() -> bool:
-    """Lance la nouvelle instance de REKA (détachée) ; l'appelant quitte ensuite."""
+    """Lance la nouvelle instance de VoiceConnector (détachée) ; l'appelant quitte ensuite."""
     program, args = restart_command()
     # Exe PyInstaller « onefile » : sans cette variable, la nouvelle instance
     # se croirait un sous-processus de celle-ci et réutiliserait son dossier
@@ -86,9 +86,9 @@ def launch_restart() -> bool:
     # PySide6 renvoie (succès, pid) ; d'autres versions un simple booléen
     started = result[0] if isinstance(result, tuple) else bool(result)
     if not started:
-        log.error("Impossible de relancer REKA : %s %s", program, " ".join(args))
+        log.error("Impossible de relancer VoiceConnector : %s %s", program, " ".join(args))
         return False
-    log.info("Redémarrage de REKA : %s %s", program, " ".join(args))
+    log.info("Redémarrage de VoiceConnector : %s %s", program, " ".join(args))
     return True
 
 
@@ -237,10 +237,6 @@ class MainWindow(QMainWindow):
         outer = QVBoxLayout(self.background)
         outer.setContentsMargins(CHEEK_W + 14, 8, CHEEK_W + 14, 14)
         outer.setSpacing(6)
-        header = QHBoxLayout()
-        header.addWidget(LogoLabel())
-        header.addStretch(1)
-        outer.addLayout(header)
         body = QHBoxLayout()
         body.setSpacing(PANEL_GAP)
         outer.addLayout(body, 1)
@@ -447,7 +443,7 @@ class MainWindow(QMainWindow):
     def _on_project(self, path: str) -> None:
         host = self._reaper
         if not host.has_projects:
-            # Pas de projet REKA : le bouton ouvre l'application du moteur
+            # Pas de projet VoiceConnector : le bouton ouvre l'application du moteur
             names = {"flstudio": ("FL Studio", "Clic : afficher FL Studio pour régler ses effets"),
                      HOST_APO: ("Equalizer APO", "Clic : ouvrir l'éditeur d'Equalizer APO")}
             name, tip = names.get(host.kind, ("Voicemeeter seul", "Aucun moteur d'effets"))
@@ -668,10 +664,10 @@ class MainWindow(QMainWindow):
         self._update = update
         self.master.set_update(update.version)
         if first:
-            self.toast.show_message(f"REKA {update.version} est disponible : "
+            self.toast.show_message(f"VoiceConnector {update.version} est disponible : "
                                     "clique sur « Mise à jour » dans le panneau Master.")
             if self._tray is not None and not self.isVisible():
-                self._tray.showMessage(config.APP_NAME, f"REKA {update.version} est disponible.",
+                self._tray.showMessage(config.APP_NAME, f"VoiceConnector {update.version} est disponible.",
                                        self.windowIcon(), 5000)
 
     def open_update(self) -> None:
@@ -858,15 +854,15 @@ class MainWindow(QMainWindow):
         self.move(left, top)
 
     def minimize(self) -> None:
-        """Réduit REKA : dans la zone de notification si l'option est active
+        """Réduit VoiceConnector : dans la zone de notification si l'option est active
         (le son continue de tourner), sinon dans la barre des tâches."""
         if self._to_tray():
-            # Fenêtre cachée : fermer une popup ne doit pas quitter REKA
+            # Fenêtre cachée : fermer une popup ne doit pas quitter VoiceConnector
             QApplication.setQuitOnLastWindowClosed(False)
             self.hide()           # l'état « agrandie » est conservé par Qt
             if not self._tray_hint_shown:
                 self._tray_hint_shown = True
-                self._tray.showMessage(config.APP_NAME, "REKA continue de tourner ici. "
+                self._tray.showMessage(config.APP_NAME, "VoiceConnector continue de tourner ici. "
                                        "Clique sur l'icône pour la rouvrir.",
                                        self.windowIcon(), 3000)
         else:
@@ -884,7 +880,7 @@ class MainWindow(QMainWindow):
         QApplication.setQuitOnLastWindowClosed(True)
 
     def quit_app(self) -> None:
-        """« Quitter REKA » du menu de la zone de notification : la fenêtre peut
+        """« Quitter VoiceConnector » du menu de la zone de notification : la fenêtre peut
         être cachée, on quitte donc explicitement après l'avoir fermée."""
         if self.close():
             QApplication.quit()
@@ -901,11 +897,11 @@ class MainWindow(QMainWindow):
         tray = QSystemTrayIcon(app.windowIcon() if app else self.windowIcon(), self)
         tray.setToolTip(config.APP_NAME)
         menu = QMenu(self)
-        show_action = QAction("Afficher REKA", menu)
+        show_action = QAction("Afficher VoiceConnector", menu)
         show_action.triggered.connect(self.show_from_tray)
         menu.addAction(show_action)
         menu.addSeparator()
-        quit_action = QAction("Quitter REKA", menu)
+        quit_action = QAction("Quitter VoiceConnector", menu)
         quit_action.triggered.connect(self.quit_app)
         menu.addAction(quit_action)
         tray.setContextMenu(menu)
@@ -932,7 +928,7 @@ class MainWindow(QMainWindow):
         super().changeEvent(event)
 
     def restart_app(self) -> None:
-        """Relance REKA (changement d'édition de Voicemeeter) : la nouvelle
+        """Relance VoiceConnector (changement d'édition de Voicemeeter) : la nouvelle
         instance attend que celle-ci ait arrêté proprement les moteurs."""
         if not self._persist:
             self.toast.show_message("Mode démo : pas de redémarrage.")
@@ -940,7 +936,7 @@ class MainWindow(QMainWindow):
         self._save_config()
         if not launch_restart():
             QMessageBox.warning(self, config.APP_NAME,
-                                "Impossible de relancer REKA automatiquement : relance-la à la main.")
+                                "Impossible de relancer VoiceConnector automatiquement : relance-la à la main.")
             return
         self.close()
 

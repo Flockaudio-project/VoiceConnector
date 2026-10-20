@@ -1,5 +1,5 @@
 """
-Choix du projet REAPER ouvert par REKA : projet vierge (aucun effet), projets
+Choix du projet REAPER ouvert par VoiceConnector : projet vierge (aucun effet), projets
 récents, ou n'importe quel .rpp. On peut le définir comme projet par défaut et
 demander le choix à chaque démarrage.
 
@@ -20,7 +20,7 @@ from core import config
 from core.process_manager import blank_project_path
 
 MAX_RECENT = 8
-BLANK_LABEL = "Projet vierge REKA — aucun effet"
+BLANK_LABEL = "Projet vierge VoiceConnector — aucun effet"
 
 
 def default_project(cfg: dict) -> str:
@@ -132,7 +132,7 @@ class ProjectDialog(QDialog):
             tags.append("● ouvert")
         item = QListWidgetItem(label + (f"    {' · '.join(tags)}" if tags else ""))
         item.setData(Qt.ItemDataRole.UserRole, path)
-        item.setToolTip(path or "Projet REKA de départ, sans aucun effet")
+        item.setToolTip(path or "Projet VoiceConnector de départ, sans aucun effet")
         self.list.addItem(item)
         return item
 
@@ -161,7 +161,7 @@ class ProjectDialog(QDialog):
         if item is None:
             return
         path = item.data(Qt.ItemDataRole.UserRole)
-        self.path_label.setText(path or "Projet de départ de REKA : 6 pistes câblées, aucun effet.")
+        self.path_label.setText(path or "Projet de départ de VoiceConnector : 6 pistes câblées, aucun effet.")
         self.make_default.setChecked(self._matches(path, default_project(self._cfg)))
 
     def _accept(self) -> None:

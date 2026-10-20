@@ -42,10 +42,10 @@ def server(monkeypatch):
     httpd.server_close()
 
 
-def publish(base, files, build=7, exe=b"MZ nouvel exe REKA" * 100, sha=None):
-    files["/REKA.exe"] = exe
+def publish(base, files, build=7, exe=b"MZ nouvel exe VoiceConnector" * 100, sha=None):
+    files["/VoiceConnector.exe"] = exe
     files["/version.json"] = json.dumps({
-        "version": "0.6.0", "build": build, "commit": "abc", "url": f"{base}/REKA.exe",
+        "version": "0.6.0", "build": build, "commit": "abc", "url": f"{base}/VoiceConnector.exe",
         "sha256": sha or hashlib.sha256(exe).hexdigest(), "size": len(exe),
         "notes": "Nouveautés", "published": "2026-10-17T00:00:00+00:00"}).encode()
     return exe
@@ -54,7 +54,7 @@ def publish(base, files, build=7, exe=b"MZ nouvel exe REKA" * 100, sha=None):
 def build_info(build=5):
     from core.updater import BuildInfo
 
-    return BuildInfo("0.5.0", build, "def", "regret-py/rekav2", "build-main")
+    return BuildInfo("0.5.0", build, "def", "zerka/voiceconnector", "build-main")
 
 
 def test_build_info_and_urls(tmp_path):
@@ -77,7 +77,7 @@ def test_build_info_and_urls(tmp_path):
 def test_parse_and_compare():
     from core.updater import UpdateError, is_newer, parse_update
 
-    good = {"version": "0.6.0", "build": 9, "url": "https://h/REKA.exe", "sha256": "a" * 64,
+    good = {"version": "0.6.0", "build": 9, "url": "https://h/VoiceConnector.exe", "sha256": "a" * 64,
             "size": 10}
     update = parse_update(good)
     assert update.build == 9 and update.describe() == "0.6.0 (build 9)"
@@ -98,7 +98,7 @@ def test_fetch_and_download(server, appdata, tmp_path):
     update = fetch_update(f"{base}/version.json")
     assert update.build == 7 and update.size == len(exe)
     seen = []
-    path = download(update, tmp_path / "REKA-7.exe", lambda got, total: seen.append((got, total)))
+    path = download(update, tmp_path / "VoiceConnector-7.exe", lambda got, total: seen.append((got, total)))
     assert path.read_bytes() == exe and seen[-1] == (len(exe), len(exe))
     assert not list(tmp_path.glob("*.part"))
 
@@ -110,27 +110,27 @@ def test_fetch_and_download(server, appdata, tmp_path):
 
     publish(base, files, sha="0" * 64)                                   # fichier abîmé
     with pytest.raises(UpdateError, match="abîmé"):
-        download(fetch_update(f"{base}/version.json"), tmp_path / "REKA-8.exe")
-    assert not (tmp_path / "REKA-8.exe").exists() and not list(tmp_path.glob("*.part"))
+        download(fetch_update(f"{base}/version.json"), tmp_path / "VoiceConnector-8.exe")
+    assert not (tmp_path / "VoiceConnector-8.exe").exists() and not list(tmp_path.glob("*.part"))
     with pytest.raises(UpdateError, match="annulé"):
-        download(update, tmp_path / "REKA-9.exe", cancelled=lambda: True)
+        download(update, tmp_path / "VoiceConnector-9.exe", cancelled=lambda: True)
 
 
 def test_install_and_cleanup(tmp_path, appdata, monkeypatch):
     from core import updater
     from core.updater import UpdateError, cleanup_previous, install, update_dir
 
-    current, new = tmp_path / "REKA.exe", tmp_path / "dl" / "REKA-7.exe"
+    current, new = tmp_path / "VoiceConnector.exe", tmp_path / "dl" / "VoiceConnector-7.exe"
     new.parent.mkdir()
     current.write_bytes(b"ancien")
     new.write_bytes(b"nouveau")
     install(new, current)
     assert current.read_bytes() == b"nouveau"
-    assert (tmp_path / "REKA.old.exe").read_bytes() == b"ancien" and not new.exists()
+    assert (tmp_path / "VoiceConnector.old.exe").read_bytes() == b"ancien" and not new.exists()
     update_dir().mkdir(parents=True)
-    (update_dir() / "REKA-6.exe").write_bytes(b"x")
+    (update_dir() / "VoiceConnector-6.exe").write_bytes(b"x")
     assert cleanup_previous(current)
-    assert not (tmp_path / "REKA.old.exe").exists() and not update_dir().exists()
+    assert not (tmp_path / "VoiceConnector.old.exe").exists() and not update_dir().exists()
 
     # Échec pendant l'installation : l'exe d'origine est remis en place
     new.write_bytes(b"encore")
@@ -141,7 +141,7 @@ def test_install_and_cleanup(tmp_path, appdata, monkeypatch):
     monkeypatch.setattr(updater.shutil, "move", broken_move)
     with pytest.raises(UpdateError, match="disque plein"):
         install(new, current)
-    assert current.read_bytes() == b"nouveau" and not (tmp_path / "REKA.old.exe").exists()
+    assert current.read_bytes() == b"nouveau" and not (tmp_path / "VoiceConnector.old.exe").exists()
 
 
 def test_update_checker(qapp, server, cfg):

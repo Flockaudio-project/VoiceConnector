@@ -3,7 +3,7 @@ Menu de sélection des moteurs : édition de Voicemeeter et moteur d'effets
 (REAPER, FL Studio, Equalizer APO ou aucun).
 
 Affiché au premier lancement (avant de démarrer quoi que ce soit), avec
-`REKA.exe --setup`, et depuis Réglages → Général. Chaque choix indique s'il
+`VoiceConnector.exe --setup`, et depuis Réglages → Général. Chaque choix indique s'il
 est installé sur ce PC et le délai qu'il ajoute au son.
 """
 
@@ -92,11 +92,11 @@ class SetupDialog(QDialog):
         layout.setSpacing(12)
         header = QHBoxLayout()
         logo = QLabel()
-        pixmap = QPixmap(str(config.resource_path("assets/reka_mark.png")))
+        pixmap = QPixmap(str(config.resource_path("assets/voiceconnector_mark.png")))
         if not pixmap.isNull():
             logo.setPixmap(pixmap.scaledToHeight(34, Qt.TransformationMode.SmoothTransformation))
         header.addWidget(logo)
-        title = QLabel("Bienvenue dans REKA" if first_run else "Moteurs audio")
+        title = QLabel("Bienvenue dans VoiceConnector" if first_run else "Moteurs audio")
         title.setObjectName("dialogTitle")
         header.addWidget(title)
         header.addStretch(1)

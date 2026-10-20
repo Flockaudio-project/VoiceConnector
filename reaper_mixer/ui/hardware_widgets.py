@@ -78,11 +78,11 @@ class LogoLabel(QLabel):
         self.setStyleSheet("background: transparent;")
         pixmap = QPixmap(str(config.resource_path("assets/voiceconnector_logo.png")))
         if pixmap.isNull():
-            self.setText("VOICECONNECTOR — AUDIO ROUTING & CONNECTOR")
+            self.setText("VOICECONNECTOR — VOICE & AUDIO CONNECTIVITY SOFTWARE")
             self.setObjectName("masterTitle")
         else:
             self.setPixmap(pixmap.scaledToHeight(height, Qt.TransformationMode.SmoothTransformation))
-        self.setToolTip("VoiceConnector — audio routing & connector")
+        self.setToolTip("VoiceConnector — voice & audio connectivity software")
 
 
 # --------------------------------------------------------------------------- #

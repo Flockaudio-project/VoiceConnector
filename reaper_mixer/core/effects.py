@@ -1,16 +1,16 @@
 """
 Moteurs d'effets : l'application qui applique les plugins aux strips.
 
-REKA pilote toujours Voicemeeter (volumes, routing, VU) ; les effets peuvent
+VoiceConnector pilote toujours Voicemeeter (volumes, routing, VU) ; les effets peuvent
 venir de plusieurs applications, au choix (config effects.host) :
 
 - reaper   : REAPER, piloté par le pont Lua (liste, ajout, bypass, suppression
              et interface des plugins, projets). Le son passe par l'insert de
              Voicemeeter (pilote « Voicemeeter Insert Virtual ASIO »).
-- flstudio : FL Studio, lancé et masqué par REKA ; les effets se règlent dans
+- flstudio : FL Studio, lancé et masqué par VoiceConnector ; les effets se règlent dans
              FL Studio lui-même (pas d'API de pilotage), le son passe aussi par
              l'insert de Voicemeeter, activé strip par strip (badge FX).
-- apo      : Equalizer APO : REKA écrit sa configuration (plugins VST2 par
+- apo      : Equalizer APO : VoiceConnector écrit sa configuration (plugins VST2 par
              périphérique Windows). Aucun aller-retour par l'insert : c'est le
              moteur qui ajoute le moins de délai.
 - none     : pas d'effets, Voicemeeter seul (le délai le plus faible).
@@ -48,17 +48,17 @@ class HostInfo:
 HOSTS: dict[str, HostInfo] = {
     HOST_REAPER: HostInfo(
         HOST_REAPER, "REAPER",
-        "Effets VST2/VST3/CLAP gérés depuis REKA : ajout, bypass, interface des plugins, projets.",
+        "Effets VST2/VST3/CLAP gérés depuis VoiceConnector : ajout, bypass, interface des plugins, projets.",
         "Insert Voicemeeter : + 2 tampons ASIO, plus la latence des plugins."),
     HOST_FLSTUDIO: HostInfo(
         HOST_FLSTUDIO, "FL Studio",
-        "Les effets se règlent dans FL Studio (ouvert depuis REKA) ; REKA gère l'insert "
+        "Les effets se règlent dans FL Studio (ouvert depuis VoiceConnector) ; VoiceConnector gère l'insert "
         "Voicemeeter de chaque strip.",
         "Insert Voicemeeter : + 2 tampons ASIO, plus la latence des plugins."),
     HOST_APO: HostInfo(
         HOST_APO, "Equalizer APO",
         "Plugins VST2 appliqués par Equalizer APO sur les périphériques Windows des strips, "
-        "gérés depuis REKA.",
+        "gérés depuis VoiceConnector.",
         "Pas d'aller-retour par l'insert : seulement la latence des plugins."),
     HOST_NONE: HostInfo(
         HOST_NONE, "Aucun (Voicemeeter seul)",
@@ -95,7 +95,7 @@ class EffectsHost(QObject):
     kind = HOST_NONE
     process_key: str | None = None        # processus géré par ProcessManager
     manages_fx = False                    # liste / ajout / bypass / suppression de plugins
-    has_projects = False                  # projets ouvrables depuis REKA (REAPER)
+    has_projects = False                  # projets ouvrables depuis VoiceConnector (REAPER)
     has_audio_device = False              # carte son lisible (REAPER)
     add_label = "+ Ajouter un effet"      # texte de l'emplacement libre au survol
     empty_hint = ""                       # texte d'une strip sans effet

@@ -85,14 +85,14 @@ class GearButton(QAbstractButton):
 
 
 class MinimizeButton(QAbstractButton):
-    """Bouton carré « – » : réduit REKA (dans la barre des tâches ou la zone
+    """Bouton carré « – » : réduit VoiceConnector (dans la barre des tâches ou la zone
     de notification, selon les réglages)."""
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setFixedSize(24, 24)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.setToolTip("Réduire REKA")
+        self.setToolTip("Réduire VoiceConnector")
 
     def paintEvent(self, _event) -> None:  # noqa: N802
         p = QPainter(self)
@@ -521,7 +521,7 @@ class MasterWidget(QFrame):
         """Affiche (ou cache) la pill de mise à jour."""
         if version:
             self.update_button.set_text(f"Mise à jour {version}")
-            self.update_button.setToolTip(f"REKA {version} est disponible — clic pour l'installer")
+            self.update_button.setToolTip(f"VoiceConnector {version} est disponible — clic pour l'installer")
         self.update_button.setVisible(bool(version))
 
     def _on_knob(self, db: float) -> None:

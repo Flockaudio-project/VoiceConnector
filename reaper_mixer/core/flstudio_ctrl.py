@@ -2,7 +2,7 @@
 Moteur d'effets FL Studio.
 
 FL Studio n'a pas d'API de pilotage externe comme le pont Lua de REAPER : ses
-effets se règlent dans FL Studio lui-même. REKA s'occupe du reste :
+effets se règlent dans FL Studio lui-même. VoiceConnector s'occupe du reste :
 
   - il lance FL Studio au démarrage (masqué, comme REAPER), sur le projet
     choisi (flstudio.project), et le ferme en partant ;
@@ -118,7 +118,7 @@ class FlStudioController(EffectsHost):
 
     def show_app(self) -> None:
         if self._processes is None or not self._processes.bring_to_front("flstudio"):
-            self.command_failed.emit("FL Studio ne tourne pas : relance REKA pour le démarrer.")
+            self.command_failed.emit("FL Studio ne tourne pas : relance VoiceConnector pour le démarrer.")
 
     def _check(self) -> None:
         alive = bool(self._processes is not None and self._processes.is_running("flstudio"))

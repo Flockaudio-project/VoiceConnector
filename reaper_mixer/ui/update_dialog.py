@@ -43,11 +43,11 @@ class UpdateDialog(QDialog):
         layout.setSpacing(10)
         header = QHBoxLayout()
         logo = QLabel()
-        pixmap = QPixmap(str(config.resource_path("assets/reka_mark.png")))
+        pixmap = QPixmap(str(config.resource_path("assets/voiceconnector_mark.png")))
         if not pixmap.isNull():
             logo.setPixmap(pixmap.scaledToHeight(34, Qt.TransformationMode.SmoothTransformation))
         header.addWidget(logo)
-        title = QLabel("Nouvelle version de REKA disponible")
+        title = QLabel("Nouvelle version de VoiceConnector disponible")
         title.setObjectName("dialogTitle")
         header.addWidget(title)
         header.addStretch(1)
@@ -65,10 +65,10 @@ class UpdateDialog(QDialog):
             layout.addWidget(notes)
 
         self.status = QLabel(
-            "REKA va télécharger la nouvelle version, la vérifier, puis redémarrer dessus. "
+            "VoiceConnector va télécharger la nouvelle version, la vérifier, puis redémarrer dessus. "
             "Tes réglages et ton projet REAPER sont conservés."
             if self._self_update else
-            "Télécharge le nouveau REKA.exe et remplace l'ancien.")
+            "Télécharge le nouveau VoiceConnector.exe et remplace l'ancien.")
         self.status.setObjectName("hint")
         self.status.setWordWrap(True)
         layout.addWidget(self.status)
@@ -88,7 +88,7 @@ class UpdateDialog(QDialog):
         buttons.addWidget(self.later_button)
         self.browser_button = QPushButton("Télécharger" if not self._self_update
                                           else "Navigateur")
-        self.browser_button.setToolTip("Télécharger REKA.exe avec le navigateur")
+        self.browser_button.setToolTip("Télécharger VoiceConnector.exe avec le navigateur")
         self.browser_button.clicked.connect(self._open_browser)
         buttons.addWidget(self.browser_button)
         self.install_button = QPushButton("Mettre à jour")
@@ -140,7 +140,7 @@ class UpdateDialog(QDialog):
             self._on_failed(f"{exc}\nLe nouvel exe est ici : {path}")
             return
         self.installed = True
-        self.status.setText("Mise à jour installée : REKA redémarre.")
+        self.status.setText("Mise à jour installée : VoiceConnector redémarre.")
         self.accept()
 
     def _on_failed(self, message: str) -> None:
@@ -148,7 +148,7 @@ class UpdateDialog(QDialog):
             return
         self._downloader = None
         self.progress.hide()
-        self.status.setText(f"⚠ {message}\nTu peux aussi télécharger REKA.exe dans le navigateur.")
+        self.status.setText(f"⚠ {message}\nTu peux aussi télécharger VoiceConnector.exe dans le navigateur.")
         self.install_button.setEnabled(True)
         self.install_button.setText("Réessayer")
         self.skip_button.setEnabled(True)

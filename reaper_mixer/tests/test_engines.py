@@ -72,7 +72,7 @@ def test_apo_config_written_and_settings_kept(qapp, cfg, tmp_path):
     comp = _dll(tmp_path / "Comp x64.dll", 0x8664)
     host.add_fx(2, str(eq))
     host.add_fx(2, str(comp))
-    text = (config_dir / "reka.txt").read_text(encoding="utf-8")
+    text = (config_dir / "voiceconnector.txt").read_text(encoding="utf-8")
     assert "Device: {aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee}" in text
     assert f'VSTPlugin: Library "{eq}"' in text and f'VSTPlugin: Library "{comp}"' in text
     assert [f.display_name for f in tracks[-1][2].fx] == ["ReaEQ", "Comp x64"]
@@ -85,23 +85,23 @@ def test_apo_config_written_and_settings_kept(qapp, cfg, tmp_path):
 
     # Réglages faits dans l'éditeur d'APO (ChunkData) : conservés à la réécriture
     edited = text.replace(f'VSTPlugin: Library "{comp}"', f'VSTPlugin: Library "{comp}" ChunkData "QUJD"')
-    (config_dir / "reka.txt").write_text(edited, encoding="utf-8")
+    (config_dir / "voiceconnector.txt").write_text(edited, encoding="utf-8")
     host.set_fx_enabled(2, 0, False)               # bypass d'un plugin : ligne en commentaire
-    text = (config_dir / "reka.txt").read_text(encoding="utf-8")
+    text = (config_dir / "voiceconnector.txt").read_text(encoding="utf-8")
     assert f'VSTPlugin: Library "{comp}" ChunkData "QUJD"' in text
-    assert f'# [REKA:off] VSTPlugin: Library "{eq}"' in text
+    assert f'# [VoiceConnector:off] VSTPlugin: Library "{eq}"' in text
     host.set_chain_enabled(2, False)               # bypass de la chaîne : tout en commentaire
-    text = (config_dir / "reka.txt").read_text(encoding="utf-8")
-    assert f'# [REKA:off] VSTPlugin: Library "{comp}" ChunkData "QUJD"' in text
+    text = (config_dir / "voiceconnector.txt").read_text(encoding="utf-8")
+    assert f'# [VoiceConnector:off] VSTPlugin: Library "{comp}" ChunkData "QUJD"' in text
     host.set_chain_enabled(2, True)
     host.remove_fx(2, 0)
-    text = (config_dir / "reka.txt").read_text(encoding="utf-8")
+    text = (config_dir / "voiceconnector.txt").read_text(encoding="utf-8")
     assert str(eq) not in text and f'VSTPlugin: Library "{comp}" ChunkData "QUJD"' in text
 
     # Micro : périphérique choisi par son nom, écrit avec son GUID
     host.set_device(0, "Microphone (Shure MV7)")
     host.add_fx(0, str(eq))
-    text = (config_dir / "reka.txt").read_text(encoding="utf-8")
+    text = (config_dir / "voiceconnector.txt").read_text(encoding="utf-8")
     assert "Device: {11111111-2222-3333-4444-555555555555}" in text
     assert text.rstrip().endswith("Device: all")
 

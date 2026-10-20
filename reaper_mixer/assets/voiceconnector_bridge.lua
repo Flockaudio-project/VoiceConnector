@@ -1,11 +1,11 @@
 --[[
-  REKA — pont entre l'application et REAPER.
+  VoiceConnector — pont entre l'application et REAPER.
 
   Chargé au démarrage de REAPER par Scripts/__startup.lua, uniquement quand
-  REAPER est lancé par REKA (variable d'environnement REKA_IPC).
+  REAPER est lancé par VoiceConnector (variable d'environnement VOICECONNECTOR_IPC).
   Lancé à la main, REAPER n'exécute rien de ce fichier.
 
-  Échanges par fichiers texte dans le dossier REKA_IPC :
+  Échanges par fichiers texte dans le dossier VOICECONNECTOR_IPC :
     commands.txt  écrit par l'app   : commandes numérotées
     state.txt     écrit par le pont : projet, pistes, effets, carte son, accusés (~5 fois/s)
     fxlist.txt    écrit par le pont : plugins installés, sur demande
@@ -20,7 +20,7 @@
   créée que lorsqu'on ajoute un effet à une strip qui n'en a pas.
 ]]
 
-local DIR = os.getenv("REKA_IPC")
+local DIR = os.getenv("VOICECONNECTOR_IPC")
 if not DIR or DIR == "" then return end
 DIR = DIR:gsub("\\", "/"):gsub("/+$", "")
 

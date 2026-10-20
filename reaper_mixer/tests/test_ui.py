@@ -178,9 +178,9 @@ def test_custom_background_and_panel_opacity(qapp, mixer, tmp_path, appdata):
     assert [dialog.tabs.tabText(i) for i in range(dialog.tabs.count())] == [
         "Général", "Canaux", "Audio", "Apparence", "À propos"]
     assert not dialog.remove_background.isEnabled()
-    dialog.set_background(image)                # copiée dans %APPDATA%/REKA
+    dialog.set_background(image)                # copiée dans %APPDATA%/VoiceConnector
     assert window._cfg["ui"]["background_image"] == "background.png"
-    assert (appdata / "REKA" / "background.png").is_file() and window.background.has_image
+    assert (appdata / "VoiceConnector" / "background.png").is_file() and window.background.has_image
     dialog.darkness.setValue(70)
     assert window._cfg["ui"]["background_darkness"] == 0.7 and window.background._darkness == 0.7
     dialog.opacity.setValue(60)
@@ -188,7 +188,7 @@ def test_custom_background_and_panel_opacity(qapp, mixer, tmp_path, appdata):
 
     dialog._clear_background()
     assert window._cfg["ui"]["background_image"] == "" and not window.background.has_image
-    assert not list((appdata / "REKA").glob("background.*"))
+    assert not list((appdata / "VoiceConnector").glob("background.*"))
     dialog.opacity.setValue(100)
     dialog.done(0)
 
@@ -241,7 +241,7 @@ def test_edition_choice_needs_restart(qapp, mixer):
     assert restarts == [True]
     dialog.done(0)
 
-    # Depuis la console : les réglages se ferment, puis REKA redémarre (en démo : un message)
+    # Depuis la console : les réglages se ferment, puis VoiceConnector redémarre (en démo : un message)
     window._cfg["voicemeeter"]["kind"] = "potato"
 
     def choose_banana():
@@ -368,7 +368,7 @@ def test_restart_failure_is_reported(qapp, monkeypatch):
     from ui import main_window
 
     monkeypatch.setattr(main_window, "restart_command",
-                        lambda: ("/chemin/introuvable/REKA.exe", ["--restart"]))
+                        lambda: ("/chemin/introuvable/VoiceConnector.exe", ["--restart"]))
     assert main_window.launch_restart() is False
 
 
@@ -388,7 +388,7 @@ def test_pad_drag_stops_when_button_released_elsewhere(qapp, mixer):
 
 
 def _request_show_in_subprocess(qapp) -> str:
-    """Lance request_show() dans un autre processus (comme un 2e REKA.exe) en
+    """Lance request_show() dans un autre processus (comme un 2e VoiceConnector.exe) en
     laissant tourner la boucle Qt d'ici, qui doit lui répondre."""
     import os
     import subprocess
@@ -516,7 +516,7 @@ def _fake_updater():
             self.checks.append(manual)
             return True
 
-    update = UpdateInfo("0.6.0", 7, "c", "https://example.invalid/REKA.exe", "0" * 64, 10,
+    update = UpdateInfo("0.6.0", 7, "c", "https://example.invalid/VoiceConnector.exe", "0" * 64, 10,
                         "Notes", "")
     return Updater(), update
 
@@ -570,12 +570,12 @@ def test_about_tab_update_check(qapp, updating):
     dialog = SettingsDialog(window._cfg, None, None, window._vm, window, persist=False,
                             updater=updater)
     titles = [label.text() for label in dialog.findChildren(QLabel, "dialogTitle")]
-    assert "REKA 0.5.0 (build 5)" in titles
+    assert "VoiceConnector 0.5.0 (build 5)" in titles
     assert dialog.check_update.isEnabled() and dialog.install_update.isHidden()
     dialog.check_update.click()
     assert updater.checks == [True] and not dialog.check_update.isEnabled()
     updater.up_to_date.emit()
-    assert dialog.update_status.text() == "REKA est à jour." and dialog.check_update.isEnabled()
+    assert dialog.update_status.text() == "VoiceConnector est à jour." and dialog.check_update.isEnabled()
     updater.failed.emit("hors ligne")
     assert "hors ligne" in dialog.update_status.text()
     updater.available.emit(update)

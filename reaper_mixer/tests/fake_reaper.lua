@@ -1,5 +1,5 @@
 -- Faux REAPER minimal pour exécuter le pont hors de REAPER.
--- Usage : REKA_IPC=<dir> lua5.4 fake_reaper.lua <__startup.lua> <stopfile>
+-- Usage : VOICECONNECTOR_IPC=<dir> lua5.4 fake_reaper.lua <__startup.lua> <stopfile>
 --
 -- Projet de départ : comme un projet d'utilisateur (MAIN.rpp) — pistes sans
 -- nom, piste 1 en mono sur l'entrée 1, pistes 2 et 3 en stéréo 3/4 et 5/6.
@@ -101,7 +101,7 @@ local function summary()
       tr.values.I_RECINPUT, tr.values.I_RECARM, tr.values.I_RECMON, tr.values.I_RECMODE or 0,
       tr.values.B_MAINSEND, tostring(tr.sends[1] and tr.sends[1].I_DSTCHAN))
   end
-  local out = io.open(os.getenv("REKA_IPC") .. "/fake_summary.txt", "w")
+  local out = io.open(os.getenv("VOICECONNECTOR_IPC") .. "/fake_summary.txt", "w")
   out:write(table.concat(parts, " ") .. "\n")
   out:close()
 end

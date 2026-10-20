@@ -166,7 +166,7 @@ def test_legacy_data_migration(appdata):
     (legacy / "session.rpp").write_text("<REAPER_PROJECT\n>\n")
     (legacy / "app.log").write_text("vieux journal")
     path = config.app_data_dir()
-    assert path == appdata / "REKA"
+    assert path == appdata / "VoiceConnector"
     assert (path / "session.rpp").is_file() and not (path / "app.log").exists()
     assert config.load_config()["reaper"]["path"] == "C:/R/reaper.exe"
 
@@ -368,7 +368,7 @@ def test_voicemeeter_external_changes_not_hidden_by_cache(qapp, cfg, monkeypatch
     params = []
     vm.params_changed.connect(params.append)
     vm.start_polling()
-    vm.set_mute(0, False)                 # REKA démute le micro…
+    vm.set_mute(0, False)                 # VoiceConnector démute le micro…
     pump(qapp, 0.3)
     assert not params[-1].strips[0].mute
     remote.params["Strip[0].Mute"] = 1.0  # … puis il est muté dans Voicemeeter (ou une macro)
@@ -393,13 +393,13 @@ def test_voicemeeter_failed_writes_and_inserts_are_retried(qapp, cfg, monkeypatc
     vm._flush()                           # Voicemeeter revient : rien n'a été perdu
     assert remote.params["Strip[0].Gain"] == -3.0 and remote.params["Strip[5].Gain"] == -9.0
     assert remote.params["patch.insert[0]"] == 1.0 and remote.params["patch.insert[1]"] == 1.0
-    # Voicemeeter relancé : ses inserts sont revenus à zéro, REKA les réactive
+    # Voicemeeter relancé : ses inserts sont revenus à zéro, VoiceConnector les réactive
     remote.params["patch.insert[0]"] = remote.params["patch.insert[1]"] = 0.0
     vm._reassert_inserts()
     assert remote.params["patch.insert[0]"] == 1.0 and remote.params["patch.insert[1]"] == 1.0
     vm.close()
     assert remote.params["patch.insert[0]"] == 0.0    # rendu à son état d'origine
-    assert remote.params["patch.insert[1]"] == 1.0    # il était déjà actif avant REKA
+    assert remote.params["patch.insert[1]"] == 1.0    # il était déjà actif avant VoiceConnector
 
 
 def test_reaper_retry_rewrites_commands(qapp, cfg, tmp_path):

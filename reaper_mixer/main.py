@@ -1,5 +1,5 @@
 """
-REKA — point d'entrée.
+VoiceConnector — point d'entrée.
 
 Séquence de démarrage :
   1. Lecture de config.json (défauts + copie utilisateur dans %APPDATA%) ;
@@ -69,14 +69,14 @@ RESTART_WAIT_MS = 45000      # --restart : attente de la fin de l'instance préc
 OLD_EXE_RETRY_MS = 20000     # après une mise à jour : nouvel essai de suppression de l'ancien exe
 SHOW_REQUEST_TIMEOUT_MS = 1500  # 2e lancement : demande à l'instance ouverte de s'afficher
 CLOSING_WAIT_MS = 20000      # 2e lancement pendant la fermeture de l'instance : on l'attend
-WINDOWS_APP_ID = "REKA.Console"
+WINDOWS_APP_ID = "VoiceConnector.Console"
 
 
 # --------------------------------------------------------------------------- #
 # Journalisation et erreurs non gérées
 # --------------------------------------------------------------------------- #
 def setup_logging() -> Path:
-    """Logs dans %APPDATA%/REKA/app.log (rotation 3 × 2 Mo)."""
+    """Logs dans %APPDATA%/VoiceConnector/app.log (rotation 3 × 2 Mo)."""
     log_path = config.app_data_dir() / "app.log"
     formatter = logging.Formatter(LOG_FORMAT)
     root = logging.getLogger()
@@ -151,7 +151,7 @@ def set_windows_app_id() -> None:
 # Écran de chargement
 # --------------------------------------------------------------------------- #
 class SplashScreen(QSplashScreen):
-    """Logo REKA affiché pendant le lancement des moteurs audio."""
+    """Logo VoiceConnector affiché pendant le lancement des moteurs audio."""
 
     WIDTH, HEIGHT = 540, 310
     LOGO_HEIGHT = 268
@@ -164,7 +164,7 @@ class SplashScreen(QSplashScreen):
 
     def set_status(self, text: str) -> None:
         self.showMessage(text, Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignHCenter,
-                         QColor(styles.TEXT_SECONDARY))
+                         QColor("#4a6a7d"))
 
     def mousePressEvent(self, event) -> None:  # noqa: N802 (API Qt)
         # Un clic ferme un QSplashScreen par défaut : on l'ignore, sinon
@@ -177,12 +177,12 @@ class SplashScreen(QSplashScreen):
         ratio = screen.devicePixelRatio() if screen else 1.0
         pixmap = QPixmap(round(cls.WIDTH * ratio), round(cls.HEIGHT * ratio))
         pixmap.setDevicePixelRatio(ratio)
-        pixmap.fill(QColor("#0c1013"))
+        pixmap.fill(QColor("#f4f9fb"))
 
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        logo = QPixmap(str(config.resource_path("assets/reka_logo.png")))
+        logo = QPixmap(str(config.resource_path("assets/voiceconnector_logo.png")))
         if not logo.isNull():
             logo = logo.scaledToHeight(round(cls.LOGO_HEIGHT * ratio),
                                        Qt.TransformationMode.SmoothTransformation)
@@ -201,14 +201,14 @@ class SplashScreen(QSplashScreen):
         version_font = QApplication.font()
         version_font.setPixelSize(10)
         painter.setFont(version_font)
-        painter.setPen(QColor(styles.TEXT_MUTED))
+        painter.setPen(QColor("#6f8a9b"))
         painter.drawText(QRectF(0, 8, cls.WIDTH - 12, 16),
                          Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop,
                          f"v{config.APP_VERSION}")
         painter.drawText(QRectF(12, 8, cls.WIDTH - 24, 16),
                          Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop,
                          f"par {config.APP_AUTHORS}")
-        painter.setPen(QColor(styles.BORDER_COLUMN))
+        painter.setPen(QColor("#c5d6e0"))
         painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.drawRoundedRect(QRectF(0.5, 0.5, cls.WIDTH - 1, cls.HEIGHT - 1), 8, 8)
         painter.end()
@@ -319,7 +319,7 @@ class StartupWorker(QThread):
 
     def _ping_reaper(self) -> None:
         if not self._host.ping(timeout_s=BRIDGE_PING_TIMEOUT_S):
-            raise TimeoutError("le pont REKA ne répond pas encore")
+            raise TimeoutError("le pont VoiceConnector ne répond pas encore")
 
     def _retry(self, what: str, action: Callable[[], object], *,
                timeout_s: float, interval_s: float, hint: str = "") -> None:
@@ -452,7 +452,7 @@ class MixerApp:
         switch = None
         if other is not None:
             name = EDITIONS[other].label.split(" (")[0]
-            box.setInformativeText(f"{name} est installé : REKA peut l'utiliser à la place.")
+            box.setInformativeText(f"{name} est installé : VoiceConnector peut l'utiliser à la place.")
             switch = box.addButton(f"Utiliser {name}", QMessageBox.ButtonRole.ActionRole)
         download = box.addButton("Télécharger", QMessageBox.ButtonRole.ActionRole)
         locate = box.addButton("Localiser…", QMessageBox.ButtonRole.ActionRole)
@@ -468,7 +468,7 @@ class MixerApp:
                 return False
             if engines is not None and clicked is engines:
                 if self.choose_engines():
-                    self._relaunch("Moteur d'effets enregistré : relance REKA pour l'utiliser.")
+                    self._relaunch("Moteur d'effets enregistré : relance VoiceConnector pour l'utiliser.")
                     return False
                 continue
             if clicked is download:
@@ -508,12 +508,12 @@ class MixerApp:
         return box.clickedButton() is retry
 
     def _switch_edition(self, kind: str) -> None:
-        """Passe REKA sur une autre édition de Voicemeeter : config, puis
+        """Passe VoiceConnector sur une autre édition de Voicemeeter : config, puis
         redémarrage (les contrôleurs et le projet vierge en dépendent)."""
         log.info("Passage sur l'édition %s de Voicemeeter.", kind)
         self._cfg.setdefault("voicemeeter", {})["kind"] = kind
         save_config_quietly(self._cfg)
-        self._relaunch("Édition enregistrée : relance REKA pour l'utiliser.")
+        self._relaunch("Édition enregistrée : relance VoiceConnector pour l'utiliser.")
 
     def _relaunch(self, fallback_message: str) -> None:
         if not launch_restart():
@@ -531,7 +531,7 @@ class MixerApp:
         return True
 
     def show_window(self) -> bool:
-        """REKA relancée alors qu'elle tourne déjà (cachée près de l'horloge…) :
+        """VoiceConnector relancée alors qu'elle tourne déjà (cachée près de l'horloge…) :
         on ré-affiche la fenêtre, ou ce qui est à l'écran pendant le démarrage
         (écran de chargement, message d'erreur). False si l'app se ferme."""
         if self._stopped:
@@ -590,7 +590,7 @@ class MixerApp:
 
 def save_config_quietly(cfg: dict) -> bool:
     """Sauvegarde la config sans jamais interrompre l'application : un fichier
-    verrouillé un instant (antivirus, sauvegarde) ne doit pas fermer REKA."""
+    verrouillé un instant (antivirus, sauvegarde) ne doit pas fermer VoiceConnector."""
     try:
         config.save_config(cfg)
         return True
@@ -611,7 +611,7 @@ def _safely(func: Callable, *args, **kwargs) -> None:
 # Point d'entrée
 # --------------------------------------------------------------------------- #
 def _instance_name() -> str:
-    """Nom du canal local entre deux lancements de REKA (propre à l'utilisateur)."""
+    """Nom du canal local entre deux lancements de VoiceConnector (propre à l'utilisateur)."""
     user = os.environ.get("USERNAME") or os.environ.get("USER") or "user"
     return f"{config.APP_NAME}-{user}-show"
 
@@ -651,7 +651,7 @@ def listen_for_show_requests(on_show: Callable[[], bool]) -> QLocalServer:
     if not server.listen(name):
         QLocalServer.removeServer(name)     # canal resté d'une instance plantée
         if not server.listen(name):
-            log.warning("Canal « afficher REKA » indisponible : %s", server.errorString())
+            log.warning("Canal « afficher VoiceConnector » indisponible : %s", server.errorString())
 
     def on_connection() -> None:
         # Toute connexion vaut demande d'affichage (le message n'a pas d'autre sens)
@@ -835,7 +835,7 @@ def _selftest_updates(report: list[str], window: MainWindow, pump, capture, imag
                   else "Build : version de développement (pas de build_info.json)")
     if getattr(sys, "frozen", False) and build is None:
         problems.append("build_info.json absent de l'exe")
-    fake = UpdateInfo("9.9.9", (build.build if build else 0) + 1, "", "https://example.invalid/REKA.exe",
+    fake = UpdateInfo("9.9.9", (build.build if build else 0) + 1, "", "https://example.invalid/VoiceConnector.exe",
                       "0" * 64, 1, "Exemple de notes de version", "")
     dialog = UpdateDialog(fake, build, window, self_update=True)
     dialog.show()

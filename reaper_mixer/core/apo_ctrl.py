@@ -6,21 +6,21 @@ moteur audio de Windows, sur les périphériques où il est installé (choisis
 dans son « Configurator »). Pas d'aller-retour par l'insert de Voicemeeter :
 c'est le moteur d'effets qui ajoute le moins de délai.
 
-Ce que fait REKA :
-  - il écrit `reka.txt` dans le dossier de configuration d'Equalizer APO :
+Ce que fait VoiceConnector :
+  - il écrit `voiceconnector.txt` dans le dossier de configuration d'Equalizer APO :
     pour chaque strip, une sélection de périphérique (« Device: ») suivie de
     ses plugins (« VSTPlugin: Library … ») ; un plugin ou une chaîne en
     bypass est écrit en commentaire ;
-  - il ajoute une seule ligne « Include: reka.txt » à la fin de `config.txt`,
+  - il ajoute une seule ligne « Include: voiceconnector.txt » à la fin de `config.txt`,
     sans toucher au reste de la configuration de l'utilisateur ;
   - les réglages faits dans l'éditeur d'Equalizer APO (ChunkData des plugins)
-    sont relus et conservés quand REKA réécrit le fichier.
+    sont relus et conservés quand VoiceConnector réécrit le fichier.
 
 Périphérique Windows de chaque strip :
   - entrées virtuelles : « Voicemeeter Input », « Voicemeeter AUX Input »,
     « Voicemeeter VAIO3 Input » (là où jouent les applications) ;
   - entrées matérielles (micro…) : le périphérique de capture choisi dans
-    REKA. Voicemeeter doit alors l'ouvrir en partage (MME, ou WDM sans le
+    VoiceConnector. Voicemeeter doit alors l'ouvrir en partage (MME, ou WDM sans le
     mode exclusif) : sinon Windows, donc Equalizer APO, ne voit pas le son.
 Sous Windows, le nom est résolu en GUID de périphérique, sans ambiguïté.
 """
@@ -45,11 +45,11 @@ from core.voicemeeter_ctrl import edition, strip_map
 log = logging.getLogger(__name__)
 
 CONFIG_FILE = "config.txt"
-REKA_FILE = "reka.txt"
-INCLUDE_LINE = f"Include: {REKA_FILE}"
-HEADER = ("# Généré par REKA : ce fichier est réécrit à chaque changement fait dans REKA.\n"
+VOICECONNECTOR_FILE = "voiceconnector.txt"
+INCLUDE_LINE = f"Include: {VOICECONNECTOR_FILE}"
+HEADER = ("# Généré par VoiceConnector : ce fichier est réécrit à chaque changement fait dans VoiceConnector.\n"
           "# Les réglages des plugins (ChunkData) faits dans l'éditeur d'Equalizer APO sont conservés.\n")
-DISABLED = "# [REKA:off] "
+DISABLED = "# [VoiceConnector:off] "
 REGISTRY_KEY = r"SOFTWARE\EqualizerAPO"
 DOWNLOAD_URL = "https://sourceforge.net/projects/equalizerapo/"
 VIRTUAL_DEVICES = ("Voicemeeter Input", "Voicemeeter AUX Input", "Voicemeeter VAIO3 Input")
@@ -231,7 +231,7 @@ def resolve_device(device: str, endpoints: list[Endpoint]) -> tuple[str, str]:
 
 
 # --------------------------------------------------------------------------- #
-# Fichier reka.txt
+# Fichier voiceconnector.txt
 # --------------------------------------------------------------------------- #
 @dataclass
 class ApoPlugin:
@@ -259,7 +259,7 @@ def _library_key(path: str) -> str:
 
 
 def parse_settings(text: str) -> dict[tuple[str, str, int], str]:
-    """Réglages des plugins déjà présents dans reka.txt :
+    """Réglages des plugins déjà présents dans voiceconnector.txt :
     (motif du périphérique, bibliothèque, n-ième occurrence) → paramètres
     après le chemin (ChunkData…), pour les conserver à la réécriture."""
     settings: dict[tuple[str, str, int], str] = {}
@@ -286,7 +286,7 @@ def parse_settings(text: str) -> dict[tuple[str, str, int], str]:
 
 def render(chains: list[ApoChain | None], names: list[str], endpoints: list[Endpoint],
            previous: str = "") -> str:
-    """Contenu de reka.txt pour les chaînes des strips."""
+    """Contenu de voiceconnector.txt pour les chaînes des strips."""
     settings = parse_settings(previous)
     lines = [HEADER.rstrip("\n")]
     for index, chain in enumerate(chains):
@@ -312,7 +312,7 @@ def render(chains: list[ApoChain | None], names: list[str], endpoints: list[Endp
 
 
 def ensure_include(config_dir: Path) -> bool:
-    """Ajoute « Include: reka.txt » à la fin de config.txt s'il n'y est pas.
+    """Ajoute « Include: voiceconnector.txt » à la fin de config.txt s'il n'y est pas.
     Le reste du fichier (et son encodage) est conservé. True si modifié."""
     path = config_dir / CONFIG_FILE
     raw = path.read_bytes() if path.is_file() else b""
@@ -324,7 +324,7 @@ def ensure_include(config_dir: Path) -> bool:
     newline = "\r\n" if "\r\n" in text or not text else "\n"
     if text and not text.endswith(("\n", "\r")):
         text += newline
-    text += f"# Effets des strips de REKA{newline}{INCLUDE_LINE}{newline}"
+    text += f"# Effets des strips de VoiceConnector{newline}{INCLUDE_LINE}{newline}"
     data = text.encode("utf-8", errors="surrogateescape")
     path.write_bytes((b"\xef\xbb\xbf" if bom else b"") + data)
     log.info("Equalizer APO : « %s » ajouté à %s", INCLUDE_LINE, path)
@@ -401,7 +401,7 @@ class ApoController(EffectsHost):
 
     def status(self, connected: bool) -> tuple[bool, str, str]:
         if connected:
-            return True, "Equalizer APO", f"Configuration : {self._config_dir / REKA_FILE}"
+            return True, "Equalizer APO", f"Configuration : {self._config_dir / VOICECONNECTOR_FILE}"
         return False, "Equalizer APO introuvable", \
             f"Installe Equalizer APO ({DOWNLOAD_URL}) sur les périphériques des strips."
 
@@ -483,7 +483,7 @@ class ApoController(EffectsHost):
             self.command_failed.emit("Equalizer APO est introuvable : installe-le, ou indique son "
                                      "dossier de configuration dans les réglages.")
             return
-        path = self._config_dir / REKA_FILE
+        path = self._config_dir / VOICECONNECTOR_FILE
         try:
             previous = path.read_text(encoding="utf-8-sig", errors="replace") if path.is_file() else ""
             text = render(self._chains, self._names(), self.endpoints(), previous)
